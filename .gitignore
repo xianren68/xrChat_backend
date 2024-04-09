@@ -1,0 +1,7 @@
+.vscode/
+.idea/
+.exe
+.pdb
+.dll
+.yaml
+*.exe

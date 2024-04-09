@@ -1,0 +1,43 @@
+
+// version
+syntax = "proto3";
+
+// package
+option go_package = "./pb";
+package user;
+message LoginRequest {
+  int64 userid = 1;
+  string password = 2;
+}
+
+message RegisterRequest {
+    string username = 1;
+    string password = 2;
+    string email = 3;
+    string phone = 4;
+    string code = 5;
+}
+message ResetPassword {
+  string code = 1;
+  string email = 2;
+  string password = 3;
+}
+
+message RegisterResponse {
+    string userId = 1;
+}
+
+// verify email
+message EmailVerifyRequest {
+    string email = 1;
+}
+
+message EmailVerifyCode {
+      string email = 1;
+     string code = 2;
+}
+
+message Response {
+    int32 code  = 1;
+    string message = 2;
+}
