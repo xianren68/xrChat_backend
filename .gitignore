@@ -3,5 +3,5 @@
 .exe
 .pdb
 .dll
-.yaml
+*.yaml
 *.exe
