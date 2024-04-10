@@ -23,9 +23,6 @@ message ResetPassword {
   string password = 3;
 }
 
-message RegisterResponse {
-    string userId = 1;
-}
 
 // verify email
 message EmailVerifyRequest {
