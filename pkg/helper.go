@@ -7,31 +7,17 @@ import (
 	"encoding/base64"
 	"errors"
 	"fmt"
+	"github.com/gin-gonic/gin"
 	"github.com/jordan-wright/email"
+	"google.golang.org/protobuf/proto"
+	"io"
+	"log/slog"
 	rand "math/rand/v2"
 	"net/smtp"
 	"regexp"
 	"strings"
 	"xrChat_backend/internal/proto/pb"
-
-	"google.golang.org/protobuf/proto"
 )
-
-func HandleError(err error) []byte {
-	resp := &pb.Response{}
-	resp.Code = 500
-	resp.Message = err.Error()
-	res, _ := proto.Marshal(resp)
-	return res
-}
-
-func HandleSuccess(msg string) []byte {
-	resp := &pb.Response{}
-	resp.Code = 200
-	resp.Message = msg
-	res, _ := proto.Marshal(resp)
-	return res
-}
 
 // GenValidateCode generate random code for email verify.
 func GenValidateCode(width int) string {
@@ -86,4 +72,46 @@ func SendEmail(fem, tem, body string, emCode string) error {
 	}
 	return nil
 
+}
+
+func BindProto(c *gin.Context, data proto.Message) (err error) {
+	all, err := io.ReadAll(c.Request.Body)
+	if err != nil {
+		return err
+	}
+	err = proto.Unmarshal(all, data)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func WriteProto(c *gin.Context, data proto.Message) {
+	bytes, _ := proto.Marshal(data)
+	_, err := c.Writer.Write(bytes)
+	if err != nil {
+		slog.Error("response err" + err.Error())
+	}
+}
+
+func HandleError(c *gin.Context, er error) {
+	resp := &pb.Response{}
+	resp.Code = 500
+	resp.Message = er.Error()
+	res, _ := proto.Marshal(resp)
+	_, err := c.Writer.Write(res)
+	if err != nil {
+		slog.Error("success response err" + err.Error())
+	}
+}
+
+func HandleSuccess(c *gin.Context, msg string) {
+	resp := &pb.Response{}
+	resp.Code = 200
+	resp.Message = msg
+	res, _ := proto.Marshal(resp)
+	_, err := c.Writer.Write(res)
+	if err != nil {
+		slog.Error("response 200 error" + err.Error())
+	}
 }

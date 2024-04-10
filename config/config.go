@@ -44,10 +44,10 @@ func GetConfig() *Config {
 		panic("config file not found")
 	}
 
-	var config = new(Config)
+	var config = &Config{}
 	err = yaml.Unmarshal(file, config)
 	if err != nil {
-		panic("failed to unmarshal config file")
+		panic("failed to unmarshal config file:" + err.Error())
 	}
 
 	return config
@@ -57,6 +57,7 @@ var DB *gorm.DB
 var RedisClient *redis.Client
 var FromEmail string
 var EmCode string
+var Port int
 
 // Global init some global config.
 func Global() {
@@ -102,4 +103,5 @@ func Global() {
 	slog.Info("Connected to redis")
 	FromEmail = config.FromEmail
 	EmCode = config.EmCode
+	Port = config.Port
 }
