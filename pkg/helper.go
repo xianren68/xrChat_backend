@@ -42,11 +42,19 @@ func VerifyEmailAddress(address string) (err error) {
 
 // GenerateSalt generate salt for encrypt password.
 func GenerateSalt() (salt string, err error) {
-	res := make([]byte, 16)
-	if _, err = Rand.Read(res); err != nil {
+	// 定义盐值的长度，通常16或32字节就足够
+	const saltLength = 32
+
+	// 创建一个足够大的缓冲区以存储随机字节
+	buf := make([]byte, saltLength)
+
+	// 从crypto/rand读取随机字节
+	if _, err = io.ReadFull(Rand.Reader, buf); err != nil {
 		return "", err
 	}
-	salt = string(res)
+
+	// 将字节转换为十六进制字符串作为盐值
+	salt = fmt.Sprintf("%x", buf)
 	return
 }
 

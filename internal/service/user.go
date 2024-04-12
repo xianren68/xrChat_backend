@@ -3,6 +3,9 @@ package service
 
 import (
 	"errors"
+	"fmt"
+	"strconv"
+	"xrChat_backend/config"
 	"xrChat_backend/internal/model"
 	"xrChat_backend/internal/proto/pb"
 	"xrChat_backend/internal/repository"
@@ -35,7 +38,9 @@ func VerifyEmail(email string) (err error) {
 func Register(registerInfo *pb.RegisterRequest) error {
 	user := &model.User{}
 	user.Username = registerInfo.Username
+	// generate salt
 	salt, err := pkg.GenerateSalt()
+	fmt.Println(salt)
 	if err != nil {
 		return err
 	}
@@ -47,6 +52,10 @@ func Register(registerInfo *pb.RegisterRequest) error {
 		return err
 	}
 	err = repository.RegisterUser(user)
+	if err != nil {
+		return err
+	}
+	err = pkg.SendEmail(config.FromEmail, user.Email, strconv.Itoa(int(user.UserId)), config.EmCode)
 	if err != nil {
 		return err
 	}

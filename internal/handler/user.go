@@ -54,6 +54,7 @@ func Register(c *gin.Context) {
 	err = service.Register(registerInfo)
 	if err != nil {
 		pkg.HandleError(c, err)
+		return
 	}
 	pkg.HandleSuccess(c, "注册成功，userId已发送至邮箱")
 }
