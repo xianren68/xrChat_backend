@@ -1,0 +1,12 @@
+// version
+syntax = "proto3";
+
+// package
+option go_package = "./pb";
+package relation;
+
+message AddFriendRequest {
+  uint64 ownerId = 1;
+  uint64 targetId = 2;
+  string remark = 3;
+}

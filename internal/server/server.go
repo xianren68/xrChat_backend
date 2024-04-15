@@ -11,11 +11,17 @@ import (
 func InitRouter() *gin.Engine {
 	engine := gin.Default()
 	engine.Use(middleware.Cors())
+	// user router.
 	user := engine.Group("/user")
 	{
 		user.POST("/register", handler.Register)
 		user.POST("/login", handler.Login)
 		user.POST("/verifyEmail", handler.VerifyEmail)
+	}
+	// relation router.
+	relation := engine.Group("/relation")
+	{
+		relation.POST("/addFriendReq", handler.AddFriendReq)
 	}
 	return engine
 }

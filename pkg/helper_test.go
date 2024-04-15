@@ -30,7 +30,7 @@ func TestVerifyEmailAddress(t *testing.T) {
 }
 
 func TestEntryPassword(t *testing.T) {
-	slat, err := generateSalt()
+	slat, err := GenerateSalt()
 	if err != nil {
 		t.Errorf("generateSalt() expected no error, got %v", err)
 	}

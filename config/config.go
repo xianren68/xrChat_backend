@@ -78,7 +78,7 @@ func Global() {
 	// Connect to mysql.
 	// Example: db, err := gorm.Open("username:password@tcp(host:port)/database",&gorm.Config{})
 	var err error
-	DB, err = gorm.Open(mysql.Open(fmt.Sprintf("%s:%s@tcp(%s:%d)/%s", config.Mysql.Username, config.Mysql.Password, config.Mysql.Host, config.Mysql.Port, config.Mysql.Db)), &gorm.Config{})
+	DB, err = gorm.Open(mysql.Open(fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?parseTime=true", config.Mysql.Username, config.Mysql.Password, config.Mysql.Host, config.Mysql.Port, config.Mysql.Db)), &gorm.Config{})
 	if err != nil {
 		slog.Error("Failed to connect to mysql", "error", err)
 		panic(err)

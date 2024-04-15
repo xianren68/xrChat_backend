@@ -9,19 +9,23 @@ import (
 	"xrChat_backend/config"
 	"xrChat_backend/internal/model"
 	"xrChat_backend/pkg"
+
+	"gorm.io/gorm"
 )
 
 // Login user login.
 func Login(userInfo *model.User) (err error) {
 	selectUser := &model.User{}
-	err = config.DB.Where("user_id = ?", userInfo.UserId).First(&selectUser).Error
+	err = config.DB.Where("email = ?", userInfo.Email).First(selectUser).Error
 	if err != nil {
-		return err
+		slog.Error("%s", err)
+		return errors.New("账号或密码错误")
 	}
-	if selectUser.Password == userInfo.Password {
-		return err
+	userInfo.Password = pkg.EncryptPassword(selectUser.Salt, userInfo.Password)
+	if selectUser.Password != userInfo.Password {
+		return errors.New("账号或密码错误")
 	}
-	return errors.New("用户名或密码错误")
+	return
 }
 
 // VerifyEmail save email address and verify code to redis.
@@ -59,6 +63,10 @@ func VerifyEmailCode(email string, code string) (err error) {
 
 // RegisterUser add user to database.
 func RegisterUser(userInfo *model.User) (err error) {
+	exist := EmailIsExist(userInfo.Email)
+	if exist {
+		return errors.New("该邮箱已被注册过")
+	}
 	err = config.DB.Create(userInfo).Error
 	if err != nil {
 		slog.Error("Create err:", err)
@@ -66,4 +74,10 @@ func RegisterUser(userInfo *model.User) (err error) {
 		return err
 	}
 	return nil
+}
+
+// EmailIsExist judge email is exist.
+func EmailIsExist(email string) bool {
+	result := config.DB.Where("email = ?", email).First(&model.User{})
+	return !errors.Is(result.Error, gorm.ErrRecordNotFound)
 }

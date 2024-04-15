@@ -7,9 +7,6 @@ import (
 	"encoding/base64"
 	"errors"
 	"fmt"
-	"github.com/gin-gonic/gin"
-	"github.com/jordan-wright/email"
-	"google.golang.org/protobuf/proto"
 	"io"
 	"log/slog"
 	rand "math/rand/v2"
@@ -17,6 +14,10 @@ import (
 	"regexp"
 	"strings"
 	"xrChat_backend/internal/proto/pb"
+
+	"github.com/gin-gonic/gin"
+	"github.com/jordan-wright/email"
+	"google.golang.org/protobuf/proto"
 )
 
 // GenValidateCode generate random code for email verify.
@@ -82,6 +83,7 @@ func SendEmail(fem, tem, body string, emCode string) error {
 
 }
 
+// BindProto bind protobuf data to go struct.
 func BindProto(c *gin.Context, data proto.Message) (err error) {
 	all, err := io.ReadAll(c.Request.Body)
 	if err != nil {
@@ -94,6 +96,7 @@ func BindProto(c *gin.Context, data proto.Message) (err error) {
 	return nil
 }
 
+// WriteProto write protobuf data to http response.
 func WriteProto(c *gin.Context, data proto.Message) {
 	bytes, _ := proto.Marshal(data)
 	_, err := c.Writer.Write(bytes)

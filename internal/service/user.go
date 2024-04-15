@@ -4,8 +4,6 @@ package service
 import (
 	"errors"
 	"fmt"
-	"strconv"
-	"xrChat_backend/config"
 	"xrChat_backend/internal/model"
 	"xrChat_backend/internal/proto/pb"
 	"xrChat_backend/internal/repository"
@@ -14,7 +12,7 @@ import (
 
 func Login(loginInfo *pb.LoginRequest) error {
 	user := &model.User{}
-	user.UserId = loginInfo.Userid
+	user.Email = loginInfo.Email
 	user.Password = loginInfo.Password
 	return repository.Login(user)
 
@@ -51,13 +49,5 @@ func Register(registerInfo *pb.RegisterRequest) error {
 	if err != nil {
 		return err
 	}
-	err = repository.RegisterUser(user)
-	if err != nil {
-		return err
-	}
-	err = pkg.SendEmail(config.FromEmail, user.Email, strconv.Itoa(int(user.UserId)), config.EmCode)
-	if err != nil {
-		return err
-	}
-	return nil
+	return repository.RegisterUser(user)
 }
