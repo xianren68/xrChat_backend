@@ -10,7 +10,7 @@ import (
 	"xrChat_backend/pkg"
 )
 
-func Login(loginInfo *pb.LoginRequest) error {
+func Login(loginInfo *pb.LoginRequest) (error, *model.User) {
 	user := &model.User{}
 	user.Email = loginInfo.Email
 	user.Password = loginInfo.Password

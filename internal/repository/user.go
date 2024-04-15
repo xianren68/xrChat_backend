@@ -14,17 +14,20 @@ import (
 )
 
 // Login user login.
-func Login(userInfo *model.User) (err error) {
-	selectUser := &model.User{}
-	err = config.DB.Where("email = ?", userInfo.Email).First(selectUser).Error
+func Login(userInfo *model.User) (err error, user *model.User) {
+	user = &model.User{}
+	err = config.DB.Where("email = ?", userInfo.Email).First(user).Error
 	if err != nil {
 		slog.Error("%s", err)
-		return errors.New("账号或密码错误")
+		err = errors.New("账号或密码错误")
+		return
 	}
-	userInfo.Password = pkg.EncryptPassword(selectUser.Salt, userInfo.Password)
-	if selectUser.Password != userInfo.Password {
-		return errors.New("账号或密码错误")
+	userInfo.Password = pkg.EncryptPassword(user.Salt, userInfo.Password)
+	if user.Password != userInfo.Password {
+		err = errors.New("账号或密码错误")
+		return
 	}
+
 	return
 }
 

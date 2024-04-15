@@ -37,3 +37,12 @@ message Response {
     int32 code  = 1;
     string message = 2;
 }
+
+message LoginResponse {
+  int32 code = 1;
+  uint32 id = 2;
+  string username = 3;
+  string line = 4;
+  string avatar = 5;
+  string message = 6;
+}

@@ -13,17 +13,29 @@ import (
 // Login handle user login.
 func Login(c *gin.Context) {
 	loginInfo := &pb.LoginRequest{}
+	userProto := &pb.LoginResponse{}
 	err := pkg.BindProto(c, loginInfo)
 	if err != nil {
-		pkg.HandleError(c, err)
+		userProto.Code = 500
+		userProto.Message = err.Error()
+		pkg.WriteProto(c, userProto)
 		return
 	}
-	err = service.Login(loginInfo)
+	err, userInfo := service.Login(loginInfo)
 	if err != nil {
-		pkg.HandleError(c, err)
+		userProto.Code = 500
+		userProto.Message = err.Error()
+		pkg.WriteProto(c, userProto)
 		return
 	}
-	pkg.HandleSuccess(c, "登录成功")
+	userProto.Id = uint32(userInfo.ID)
+	userProto.Username = userInfo.Username
+	userProto.Line = userInfo.Line
+	userProto.Avatar = userInfo.Avatar
+	userProto.Code = 200
+	userProto.Message = "success"
+
+	pkg.WriteProto(c, userProto)
 
 }
 
