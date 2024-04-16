@@ -44,5 +44,7 @@ message LoginResponse {
   string username = 3;
   string line = 4;
   string avatar = 5;
-  string message = 6;
+  string email = 6;
+  string message = 7;
+  string token = 8;
 }

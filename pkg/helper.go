@@ -108,6 +108,10 @@ func WriteProto(c *gin.Context, data proto.Message) {
 func HandleError(c *gin.Context, er error) {
 	resp := &pb.Response{}
 	resp.Code = 500
+	// show be intercept by interceptors of front-end.
+	if er.Error() == "token 出错" {
+		resp.Code = 1000
+	}
 	resp.Message = er.Error()
 	res, _ := proto.Marshal(resp)
 	_, err := c.Writer.Write(res)

@@ -2,6 +2,7 @@
 package handler
 
 import (
+	"xrChat_backend/internal/middleware"
 	"xrChat_backend/internal/proto/pb"
 	"xrChat_backend/internal/service"
 
@@ -28,12 +29,21 @@ func Login(c *gin.Context) {
 		pkg.WriteProto(c, userProto)
 		return
 	}
+	token, err := middleware.GenerateToken(uint(userInfo.ID))
+	if err != nil {
+		userProto.Code = 500
+		userProto.Message = err.Error()
+		pkg.WriteProto(c, userProto)
+		return
+	}
 	userProto.Id = uint32(userInfo.ID)
 	userProto.Username = userInfo.Username
 	userProto.Line = userInfo.Line
 	userProto.Avatar = userInfo.Avatar
 	userProto.Code = 200
 	userProto.Message = "success"
+	userProto.Email = userInfo.Email
+	userProto.Token = token
 
 	pkg.WriteProto(c, userProto)
 
