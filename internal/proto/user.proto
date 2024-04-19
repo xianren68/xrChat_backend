@@ -40,7 +40,7 @@ message Response {
 
 message LoginResponse {
   int32 code = 1;
-  uint32 id = 2;
+  uint64 id = 2;
   string username = 3;
   string line = 4;
   string avatar = 5;

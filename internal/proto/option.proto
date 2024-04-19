@@ -1,0 +1,28 @@
+// version
+syntax = "proto3";
+
+// package
+option go_package = "./pb";
+package option;
+
+
+message updateLine{
+    uint64 id = 1;
+    string line = 2;
+}
+
+message updateName {
+    uint64 id = 1;
+    string name = 2;
+}
+
+
+message updatePhone {
+    uint64 id = 1;
+    string phone = 2;
+}
+
+message updateGender {
+    uint64 id = 1;
+    string gender = 2;
+}

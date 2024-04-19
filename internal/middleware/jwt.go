@@ -55,6 +55,11 @@ func ParseToken(token string) (*Claims, error) {
 	return nil, errAuth
 }
 
+// writeToken write token to response header to notif frontend whether the auth is successful.
+func writeToken(c *gin.Context, token string) {
+	c.Header("Authorization", "Bearer "+token)
+}
+
 // Jwt middleware of json-web-token .
 func Jwt() gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -62,6 +67,7 @@ func Jwt() gin.HandlerFunc {
 		tokenHeader := c.GetHeader("Authorization")
 		// not token.
 		if tokenHeader == "" {
+			writeToken(c, "false")
 			pkg.HandleError(c, errAuth)
 			c.Abort()
 			return
@@ -69,6 +75,7 @@ func Jwt() gin.HandlerFunc {
 		// judge token format.
 		tokenString := strings.SplitN(tokenHeader, " ", 2)
 		if len(tokenString) < 2 || tokenString[0] != "Bearer" {
+			writeToken(c, "false")
 			pkg.HandleError(c, errAuth)
 			c.Abort()
 			return
@@ -76,10 +83,12 @@ func Jwt() gin.HandlerFunc {
 		// parse token.
 		claims, err := ParseToken(tokenString[1])
 		if err != nil {
+			writeToken(c, "false")
 			pkg.HandleError(c, err)
 			c.Abort()
 			return
 		}
+		writeToken(c, "true")
 		// transfer id
 		c.Set("id", claims.Id)
 	}

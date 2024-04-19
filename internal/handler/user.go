@@ -36,7 +36,7 @@ func Login(c *gin.Context) {
 		pkg.WriteProto(c, userProto)
 		return
 	}
-	userProto.Id = uint32(userInfo.ID)
+	userProto.Id = uint64(userInfo.ID)
 	userProto.Username = userInfo.Username
 	userProto.Line = userInfo.Line
 	userProto.Avatar = userInfo.Avatar

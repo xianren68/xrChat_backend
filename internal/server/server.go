@@ -2,9 +2,10 @@
 package server
 
 import (
-	"github.com/gin-gonic/gin"
 	"xrChat_backend/internal/handler"
 	"xrChat_backend/internal/middleware"
+
+	"github.com/gin-gonic/gin"
 )
 
 // InitRouter init router.
@@ -18,8 +19,14 @@ func InitRouter() *gin.Engine {
 		user.POST("/login", handler.Login)
 		user.POST("/verifyEmail", handler.VerifyEmail)
 	}
+	auth := engine.Group("/auth")
+	auth.Use(middleware.Jwt())
+	option := auth.Group("/option")
+	{
+		option.POST("updateLine", handler.UpdateLine)
+	}
 	// relation router.
-	relation := engine.Group("/relation")
+	relation := auth.Group("/relation")
 	{
 		relation.POST("/addFriendReq", handler.AddFriendReq)
 	}

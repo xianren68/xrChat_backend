@@ -87,10 +87,12 @@ func SendEmail(fem, tem, body string, emCode string) error {
 func BindProto(c *gin.Context, data proto.Message) (err error) {
 	all, err := io.ReadAll(c.Request.Body)
 	if err != nil {
+		slog.Error("read request body err: " + err.Error())
 		return err
 	}
 	err = proto.Unmarshal(all, data)
 	if err != nil {
+		slog.Error("unmarshal request body err: " + err.Error())
 		return err
 	}
 	return nil
@@ -108,10 +110,6 @@ func WriteProto(c *gin.Context, data proto.Message) {
 func HandleError(c *gin.Context, er error) {
 	resp := &pb.Response{}
 	resp.Code = 500
-	// show be intercept by interceptors of front-end.
-	if er.Error() == "token 出错" {
-		resp.Code = 1000
-	}
 	resp.Message = er.Error()
 	res, _ := proto.Marshal(resp)
 	_, err := c.Writer.Write(res)
