@@ -23,3 +23,8 @@ func AddFriendReq(c *gin.Context) {
 	}
 	pkg.HandleSuccess(c, "请求已发送")
 }
+
+
+func CreateGroup(c *gin.Context) {
+	
+}

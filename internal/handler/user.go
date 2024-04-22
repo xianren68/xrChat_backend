@@ -44,6 +44,8 @@ func Login(c *gin.Context) {
 	userProto.Message = "success"
 	userProto.Email = userInfo.Email
 	userProto.Token = token
+	userProto.Gender = userInfo.Gender
+	userProto.Phone = userInfo.Phone
 
 	pkg.WriteProto(c, userProto)
 

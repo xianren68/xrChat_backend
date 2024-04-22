@@ -47,4 +47,6 @@ message LoginResponse {
   string email = 6;
   string message = 7;
   string token = 8;
+  bool gender = 9;
+  string phone = 10;
 }

@@ -7,9 +7,21 @@ import (
 )
 
 func main() {
+	// get Config and set global variable.
 	config.Global()
+	// start tcpServer.
+	go func() {
+		srv := server.TcpServer()
+		config.TcpServer = srv
+		err := srv.ListenAndServe("tcp", fmt.Sprintf(":%d", config.TcpPort))
+		if err != nil {
+			panic("tcp server start failed" + err.Error())
+		}
+		return
+	}()
 	router := server.InitRouter()
-	err := router.Run(fmt.Sprintf(":%d", config.Port))
+	// start httpServer.
+	err := router.Run(fmt.Sprintf(":%d", config.HttpPort))
 	if err != nil {
 		panic(err)
 	}

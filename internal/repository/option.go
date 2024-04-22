@@ -23,7 +23,7 @@ func UpdateName(nameInfo *pb.UpdateName) (err error) {
 	if err != nil {
 		return
 	}
-	return config.DB.Model(user).Update("name", nameInfo.Name).Error
+	return config.DB.Model(user).Update("username", nameInfo.Name).Error
 }
 
 func UpdatePhone(phoneInfo *pb.UpdatePhone) (err error) {

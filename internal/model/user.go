@@ -12,6 +12,6 @@ type User struct {
 	Phone    string `json:"phone" validate:"matches(^1[3-9]{1}\\d{9}$)"`
 	Avatar   string `json:"avatar"`
 	Salt     string `json:"salt"`
-	Gender   string `json:"gender"`
+	Gender   bool   `json:"gender"`
 	Line     string `json:"line"`
 }

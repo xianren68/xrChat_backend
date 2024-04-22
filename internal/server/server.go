@@ -19,11 +19,15 @@ func InitRouter() *gin.Engine {
 		user.POST("/login", handler.Login)
 		user.POST("/verifyEmail", handler.VerifyEmail)
 	}
+	// need to authentication
 	auth := engine.Group("/auth")
 	auth.Use(middleware.Jwt())
 	option := auth.Group("/option")
 	{
 		option.POST("updateLine", handler.UpdateLine)
+		option.POST("updateName", handler.UpdateName)
+		option.POST("updateGender", handler.UpdateGender)
+		option.POST("updatePhone", handler.UpdatePhone)
 	}
 	// relation router.
 	relation := auth.Group("/relation")

@@ -8,6 +8,7 @@ import (
 	"os"
 	"xrChat_backend/internal/model"
 
+	"github.com/fwhezfwhez/tcpx"
 	"github.com/go-redis/redis/v8"
 	"gorm.io/driver/mysql"
 
@@ -17,7 +18,8 @@ import (
 
 // Config config struct.
 type Config struct {
-	Port      int    `yaml:"port"`
+	HttpPort  int    `yaml:"httpPort"`
+	TcpPort   int    `yaml:"tcpPort"`
 	Mode      string `yaml:"mode"`
 	EmCode    string `yaml:"emCode"`
 	FromEmail string `yaml:"fromEmail"`
@@ -53,11 +55,26 @@ func GetConfig() *Config {
 	return config
 }
 
+// DB mysql connect.
 var DB *gorm.DB
+
+// RedisClient redis client.
 var RedisClient *redis.Client
+
+// FromEmail email.
 var FromEmail string
+
+// EmCode email code.
 var EmCode string
-var Port int
+
+// HttpPort http port.
+var HttpPort int
+
+// TcpPort tcp port.
+var TcpPort int
+
+// TcpServer tcp server
+var TcpServer *tcpx.TcpX
 
 // Global init some global config.
 func Global() {
@@ -103,5 +120,6 @@ func Global() {
 	slog.Info("Connected to redis")
 	FromEmail = config.FromEmail
 	EmCode = config.EmCode
-	Port = config.Port
+	HttpPort = config.HttpPort
+	TcpPort = config.TcpPort
 }

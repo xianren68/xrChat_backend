@@ -2,6 +2,7 @@ package repository
 
 import (
 	"errors"
+	"log/slog"
 	"xrChat_backend/config"
 	"xrChat_backend/internal/model"
 )
@@ -24,4 +25,15 @@ func FindUserById(userId uint) bool {
 	md := new(model.User)
 	tx := config.DB.Where("user_id = ?", userId).First(md)
 	return tx.Error == nil
+}
+
+// GetMembers get all members of group.
+func GetMembers(groupId uint) (members []uint, err error) {
+	members = make([]uint, 0)
+	err = config.DB.Model(&model.Relation{}).Where("type = ? and owner_id = ?", 2, groupId).Pluck("target_id", &members).Error
+	if err != nil {
+		slog.Error("GetMembers", "err", err)
+		return
+	}
+	return
 }

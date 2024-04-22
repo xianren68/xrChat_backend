@@ -1,0 +1,10 @@
+// version
+syntax = "proto3";
+
+// package
+option go_package = "./pb";
+message Message {
+  uint64 src = 1;
+  uint64 tar = 2;
+  string msg = 3;
+}
