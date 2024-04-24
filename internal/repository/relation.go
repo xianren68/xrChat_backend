@@ -37,3 +37,13 @@ func GetMembers(groupId uint) (members []uint, err error) {
 	}
 	return
 }
+
+func GetRelations(userId uint) (relations []*model.Relation, err error) {
+	relations = make([]*model.Relation, 0)
+	err = config.DB.Where("owner_id = ? AND type = ?", userId, 1).Find(&relations).Error
+	if err != nil {
+		slog.Error("GetRelations", "err", err)
+		return
+	}
+	return
+}

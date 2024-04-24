@@ -84,3 +84,14 @@ func EmailIsExist(email string) bool {
 	result := config.DB.Where("email = ?", email).First(&model.User{})
 	return !errors.Is(result.Error, gorm.ErrRecordNotFound)
 }
+
+// GetUserById
+func GetUserById(id uint) (user *model.User, err error) {
+	user = &model.User{}
+	err = config.DB.Where("id = ?", id).First(user).Error
+	if err != nil {
+		slog.Error("get user by id error: ", err)
+		return
+	}
+	return
+}

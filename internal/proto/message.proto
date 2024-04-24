@@ -3,6 +3,7 @@ syntax = "proto3";
 
 // package
 option go_package = "./pb";
+package message;
 message Message {
   uint64 src = 1;
   uint64 tar = 2;

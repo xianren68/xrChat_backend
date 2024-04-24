@@ -12,7 +12,6 @@ func main() {
 	// start tcpServer.
 	go func() {
 		srv := server.TcpServer()
-		config.TcpServer = srv
 		err := srv.ListenAndServe("tcp", fmt.Sprintf(":%d", config.TcpPort))
 		if err != nil {
 			panic("tcp server start failed" + err.Error())

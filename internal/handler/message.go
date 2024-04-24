@@ -5,6 +5,7 @@ import (
 	"strconv"
 	"xrChat_backend/internal/proto/pb"
 	"xrChat_backend/internal/repository"
+	"xrChat_backend/internal/service"
 
 	"github.com/fwhezfwhez/tcpx"
 )
@@ -71,7 +72,8 @@ func GroupMsgHandler(c *tcpx.Context) {
 
 func sendMsg(c *tcpx.Context, message *pb.Message, MessageID int32) {
 	if c != nil {
-		//TODO save message to redis
+		// if target offline,save unread message to mysql.
+		service.SaveUnread(message, int(MessageID))
 		return
 	}
 	c.Reply(MessageID, message)

@@ -74,7 +74,7 @@ var HttpPort int
 var TcpPort int
 
 // TcpServer tcp server
-var TcpServer *tcpx.TcpX
+var UserPool *tcpx.ClientPool
 
 // Global init some global config.
 func Global() {
