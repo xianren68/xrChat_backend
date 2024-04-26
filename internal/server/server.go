@@ -33,6 +33,8 @@ func InitRouter() *gin.Engine {
 	relation := auth.Group("/relation")
 	{
 		relation.POST("/addFriendReq", handler.AddFriendReq)
+		relation.POST("/addFriendRes", handler.AddFriendRes)
+		relation.POST("/createGroup", handler.CreateGroup)
 	}
 	return engine
 }

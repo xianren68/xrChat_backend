@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"log/slog"
 	"strconv"
 	"xrChat_backend/internal/proto/pb"
@@ -19,7 +20,12 @@ func OnLine(c *tcpx.Context) {
 		return
 	}
 	msgContent := (Info.Body).(*pb.Message)
-	c.Online(strconv.Itoa(int(msgContent.Src)))
+	err = c.Online(strconv.Itoa(int(msgContent.Src)))
+	if err != nil {
+		slog.Error("OnLine online error:", err)
+		return
+	}
+	fmt.Println("OnLine online success")
 	slog.Info("OnLine:", msgContent.Src)
 }
 

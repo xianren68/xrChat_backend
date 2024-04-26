@@ -7,7 +7,7 @@ import (
 	"xrChat_backend/internal/model"
 )
 
-func AddFriendReq(relation *model.Relation) (err error) {
+func AddFriendRes(relation *model.Relation) (err error) {
 	if relation.OwnerId == relation.TargetId {
 		err = errors.New("自己无法添加自己为好友")
 		return
@@ -16,7 +16,32 @@ func AddFriendReq(relation *model.Relation) (err error) {
 		err = errors.New("您要添加的用户不存在")
 		return
 	}
-	// TODO if target online,send tcp,if outline add to redis.
+	// start a transaction
+	tx := config.DB.Begin()
+	if tx.Error != nil {
+		slog.Error("AddFriendRes", "err", tx.Error)
+	}
+	failErr := errors.New("添加好友失败")
+	// add friend
+	err = tx.Create(relation).Error
+	if err != nil {
+		slog.Error("AddFriendRes", "err", err)
+		tx.Rollback()
+		err = failErr
+		return
+	}
+	re := &model.Relation{
+		OwnerId:  relation.TargetId,
+		TargetId: relation.OwnerId,
+		Type:     1,
+	}
+	err = tx.Create(re).Error
+	if err != nil {
+		slog.Error("AddFriendRes", "err", err)
+		tx.Rollback()
+		err = failErr
+		return
+	}
 	return nil
 
 }
@@ -43,6 +68,17 @@ func GetRelations(userId uint) (relations []*model.Relation, err error) {
 	err = config.DB.Where("owner_id = ? AND type = ?", userId, 1).Find(&relations).Error
 	if err != nil {
 		slog.Error("GetRelations", "err", err)
+		return
+	}
+	return
+}
+
+func CreateGroup(group *model.Group) (err error) {
+
+	err = config.DB.Create(group).Error
+	if err != nil {
+		slog.Error("CreateGroup", "err", err)
+		err = errors.New("创建群组失败")
 		return
 	}
 	return

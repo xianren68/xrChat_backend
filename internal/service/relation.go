@@ -6,12 +6,12 @@ import (
 	"xrChat_backend/internal/repository"
 )
 
-func AddFriendReq(requestInfo *pb.AddFriendRequest) (err error) {
+func AddFriendRes(res *pb.AddRes) (err error) {
 	relation := &model.Relation{}
-	relation.OwnerId = uint(requestInfo.OwnerId)
-	relation.Remark = requestInfo.Remark
-	relation.TargetId = uint(requestInfo.TargetId)
-	err = repository.AddFriendReq(relation)
+	relation.OwnerId = uint(res.OwnerId)
+	relation.Remark = res.Remark
+	relation.TargetId = uint(res.TargetId)
+	err = repository.AddFriendRes(relation)
 	if err != nil {
 		return err
 	}
@@ -42,4 +42,13 @@ func GetFriends(requestInfo *pb.GetFriendsRequest) (friends []*pb.Friend, err er
 		friends = append(friends, friend)
 	}
 	return
+}
+
+func CreateGroup(requestInfo *pb.CreateGroupRequest) (err error) {
+	group := &model.Group{}
+	group.Name = requestInfo.Name
+	group.OwnerId = uint(requestInfo.OwnerId)
+	group.Avatar = requestInfo.Avatar
+	group.Desc = requestInfo.Desc
+	return repository.CreateGroup(group)
 }

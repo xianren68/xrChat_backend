@@ -4,10 +4,17 @@ syntax = "proto3";
 // package
 option go_package = "./pb";
 package relation;
-message AddFriendRequest {
+message AddRequest {
   uint64 ownerId = 1;
   uint64 targetId = 2;
-  string remark = 3;
+  string msg = 4;
+}
+message AddRes {
+  uint64 ownerId = 1;
+  uint64 targetId = 2;
+  string msg = 4;
+  string remark = 5;
+  string name = 6;
 }
 message Friend {
   uint64 id = 1;
@@ -26,4 +33,10 @@ message GetFriendsRes {
   repeated Friend friends = 1;
   int32 code = 2;
   string msg = 3;
+}
+message CreateGroupRequest {
+  uint64 ownerId = 1;
+  string name = 2;
+  string avatar = 3;
+  string desc = 4;
 }
