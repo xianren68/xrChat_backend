@@ -13,5 +13,6 @@ func SaveUnread(msg *pb.Message, ty int) (err error) {
 	message.Tar = uint(msg.Tar)
 	message.Msg = msg.Msg
 	message.Type = ty
+	message.Time = msg.Time
 	return repository.SaveUnread(message)
 }

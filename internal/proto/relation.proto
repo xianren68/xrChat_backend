@@ -4,17 +4,11 @@ syntax = "proto3";
 // package
 option go_package = "./pb";
 package relation;
-message AddRequest {
+
+message relationOp {
   uint64 ownerId = 1;
   uint64 targetId = 2;
   string msg = 4;
-}
-message AddRes {
-  uint64 ownerId = 1;
-  uint64 targetId = 2;
-  string msg = 4;
-  string remark = 5;
-  string name = 6;
 }
 message Friend {
   uint64 id = 1;
@@ -39,4 +33,41 @@ message CreateGroupRequest {
   string name = 2;
   string avatar = 3;
   string desc = 4;
+}
+
+message JoinGroupReq {
+  uint64 srcId = 1; // 请求添加的id
+  uint64 groupId = 2; // 群组id
+  uint64 ownerId = 3; // 群主
+  string msg = 4; // 描述消息
+}
+
+message JoinGroupRes {
+  uint64 groupId = 1; // 群组id
+  uint64 targetId = 2; // 要添加成员id
+  string msg = 3; 
+  string name = 4; // 群名称
+}
+
+message Group {
+  uint64 id = 1;
+  string name = 2;
+  string avatar = 3;
+  string desc = 4;
+  uint64 ownerId = 5;
+}
+
+message GetGroupsReq {
+  uint64 ownerId = 1;
+  string msg = 3;
+}
+
+message GetGroupsRequest {
+  uint64 ownerId = 1;
+}
+
+message GetGroupsRes {
+  repeated Group groups = 1;
+  int32 code = 2;
+  string msg = 3;
 }

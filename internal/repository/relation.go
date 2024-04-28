@@ -33,7 +33,6 @@ func AddFriendRes(relation *model.Relation) (err error) {
 	re := &model.Relation{
 		OwnerId:  relation.TargetId,
 		TargetId: relation.OwnerId,
-		Type:     1,
 	}
 	err = tx.Create(re).Error
 	if err != nil {
@@ -82,4 +81,68 @@ func CreateGroup(group *model.Group) (err error) {
 		return
 	}
 	return
+}
+
+func JoinGroup(relation *model.Relation) (err error) {
+
+	err = config.DB.Create(relation).Error
+	if err != nil {
+		slog.Error("JoinGroup", "err", err)
+		err = errors.New("加入群组失败")
+		return
+	}
+	return
+}
+
+func DelFriend(relation *model.Relation) (err error) {
+	failErr := errors.New("删除好友失败")
+	// start a transaction
+	tx := config.DB.Begin()
+	if tx.Error != nil {
+		slog.Error("DelFriend", "err", tx.Error)
+		err = failErr
+		return
+	}
+	err = tx.Delete(relation, "owner_id = ? and target_id = ? and type = ?", relation.OwnerId, relation.TargetId, relation.Type).Error
+	if err != nil {
+		slog.Error("DelFriend", "err", err)
+		tx.Rollback()
+		err = failErr
+		return
+	}
+	err = tx.Delete(&model.Relation{
+		OwnerId:  relation.TargetId,
+		TargetId: relation.OwnerId,
+	}, "owner_id = ? and target_id = ? and type = ?", relation.TargetId, relation.OwnerId, relation.Type).Error
+
+	if err != nil {
+		slog.Error("DelFriend", "err", err)
+		tx.Rollback()
+		err = failErr
+		return
+	}
+	return
+
+}
+
+func KickOutGroup(relation *model.Relation) (err error) {
+
+	failErr := errors.New("踢出群组失败")
+	err = config.DB.Delete(relation, "owner_id = ? and target_id = ? and type = ?", relation.OwnerId, relation.TargetId, relation.Type).Error
+	if err != nil {
+		slog.Error("KickOutGroup", "err", err)
+		err = failErr
+		return
+	}
+	return
+}
+
+func GetOwnerByGroupId(groupId uint) (ownerId uint, err error) {
+	group := new(model.Group)
+	err = config.DB.First(group, groupId).Error
+	if err != nil {
+		slog.Error("GetOwnerByGroupId", "err", err)
+		return
+	}
+	return group.OwnerId, nil
 }

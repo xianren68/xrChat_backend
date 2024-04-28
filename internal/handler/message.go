@@ -19,13 +19,13 @@ func OnLine(c *tcpx.Context) {
 		slog.Error("OnLine Bind error:", err)
 		return
 	}
-	msgContent := (Info.Body).(*pb.Message)
+	msgContent := (Info.Body).(pb.Message)
 	err = c.Online(strconv.Itoa(int(msgContent.Src)))
 	if err != nil {
 		slog.Error("OnLine online error:", err)
 		return
 	}
-	fmt.Println("OnLine online success")
+	fmt.Println("hello world")
 	slog.Info("OnLine:", msgContent.Src)
 }
 
@@ -38,7 +38,7 @@ func OffLine(c *tcpx.Context) {
 		return
 	}
 	msgContent := (Info.Body).(*pb.Message)
-	c.Offline()
+	_ = c.Offline()
 	slog.Info("OffLine:", msgContent.Src)
 }
 
@@ -79,8 +79,14 @@ func GroupMsgHandler(c *tcpx.Context) {
 func sendMsg(c *tcpx.Context, message *pb.Message, MessageID int32) {
 	if c != nil {
 		// if target offline,save unread message to mysql.
-		service.SaveUnread(message, int(MessageID))
+		err := service.SaveUnread(message, int(MessageID))
+		if err != nil {
+			slog.Error("sendMsg save unread error:", err)
+		}
 		return
 	}
-	c.Reply(MessageID, message)
+	err := c.Reply(MessageID, message)
+	if err != nil {
+		slog.Error("sendMsg reply error:", err)
+	}
 }

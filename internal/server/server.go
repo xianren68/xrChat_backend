@@ -19,7 +19,7 @@ func InitRouter() *gin.Engine {
 		user.POST("/login", handler.Login)
 		user.POST("/verifyEmail", handler.VerifyEmail)
 	}
-	// need to authentication
+	// need to authentication.
 	auth := engine.Group("/auth")
 	auth.Use(middleware.Jwt())
 	option := auth.Group("/option")
@@ -35,6 +35,12 @@ func InitRouter() *gin.Engine {
 		relation.POST("/addFriendReq", handler.AddFriendReq)
 		relation.POST("/addFriendRes", handler.AddFriendRes)
 		relation.POST("/createGroup", handler.CreateGroup)
+		relation.POST("joinGroupReq", handler.JoinGroupReq)
+		relation.POST("joinGroupRes", handler.JoinGroupRes)
+		relation.POST("delFriend", handler.DelFriend)
+		relation.POST("kickOutGroup", handler.KickOutGroup)
+		relation.POST("quitGroup", handler.QuitGroup)
+
 	}
 	return engine
 }

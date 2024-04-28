@@ -1,16 +1,17 @@
 package service
 
 import (
+	"errors"
 	"xrChat_backend/internal/model"
 	"xrChat_backend/internal/proto/pb"
 	"xrChat_backend/internal/repository"
 )
 
-func AddFriendRes(res *pb.AddRes) (err error) {
+func AddFriendRes(res *pb.RelationOp) (err error) {
 	relation := &model.Relation{}
 	relation.OwnerId = uint(res.OwnerId)
-	relation.Remark = res.Remark
 	relation.TargetId = uint(res.TargetId)
+	relation.Type = 1
 	err = repository.AddFriendRes(relation)
 	if err != nil {
 		return err
@@ -51,4 +52,41 @@ func CreateGroup(requestInfo *pb.CreateGroupRequest) (err error) {
 	group.Avatar = requestInfo.Avatar
 	group.Desc = requestInfo.Desc
 	return repository.CreateGroup(group)
+}
+
+func JoinGroup(requestInfo *pb.RelationOp) (err error) {
+	relation := &model.Relation{}
+	relation.OwnerId = uint(requestInfo.OwnerId)
+	relation.TargetId = uint(requestInfo.TargetId)
+	relation.Type = 2
+	return repository.JoinGroup(relation)
+}
+
+func DelFriend(requestInfo *pb.RelationOp) (err error) {
+	relation := &model.Relation{}
+	relation.OwnerId = uint(requestInfo.OwnerId)
+	relation.TargetId = uint(requestInfo.TargetId)
+	relation.Type = 1
+	return repository.DelFriend(relation)
+}
+
+func KickOutGroup(requestInfo *pb.RelationOp) (err error) {
+	relation := &model.Relation{}
+	relation.OwnerId = uint(requestInfo.OwnerId)
+	relation.TargetId = uint(requestInfo.TargetId)
+	relation.Type = 2
+	return repository.KickOutGroup(relation)
+}
+
+func QuitGroup(requestInfo *pb.RelationOp) (err error) {
+	relation := &model.Relation{}
+	relation.OwnerId = uint(requestInfo.OwnerId)
+	relation.TargetId = uint(requestInfo.TargetId)
+	relation.Type = 2
+	err = repository.KickOutGroup(relation)
+	if err != nil {
+		err = errors.New("退出群组失败")
+		return
+	}
+	return
 }

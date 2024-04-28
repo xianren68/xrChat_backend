@@ -8,4 +8,5 @@ message Message {
   uint64 src = 1; 
   uint64 tar = 2;
   string msg = 3;
+  uint64 time = 4;
 }
